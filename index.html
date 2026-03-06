@@ -1234,7 +1234,17 @@
 
       questionnaire.addEventListener('change', (e) => {
         const card = e.target.closest('.question-card');
-        if (card) card.classList.add('answered');
+        if (card) {
+          card.classList.add('answered');
+          const dimId = card.dataset.dimensionId;
+          const idx = dimensions.findIndex((d) => d.id === dimId);
+          if (idx < dimensions.length - 1) {
+            const nextCard = document.getElementById(`question-${dimensions[idx + 1].id}`);
+            setTimeout(() => nextCard?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 280);
+          } else {
+            setTimeout(() => document.getElementById('summaryPanel')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 280);
+          }
+        }
         updateReport();
       });
     }
