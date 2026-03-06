@@ -1249,8 +1249,8 @@
       });
     }
 
-    function getCategory(total) {
-      if (total === 0) {
+    function getCategory(total, completed) {
+      if (completed === 0) {
         return {
           label: '待评估',
           summary: '先完成问卷。评分完成后，这里会给出组织所处阶段和最值得优先改造的维度。',
@@ -1381,7 +1381,7 @@
       const selections = getSelections();
       const completed = selections.filter((item) => item.score !== null).length;
       const total = selections.reduce((sum, item) => sum + (item.score ?? 0), 0);
-      const category = getCategory(total);
+      const category = getCategory(total, completed);
       const advice = buildAdvice(selections, total, completed);
       const reflections = buildReflections(selections, total, completed);
 
@@ -1417,7 +1417,7 @@
       const selections = getSelections();
       const completed = selections.filter((item) => item.score !== null).length;
       const total = selections.reduce((sum, item) => sum + (item.score ?? 0), 0);
-      const category = getCategory(total);
+      const category = getCategory(total, completed);
       const lowest = [...selections]
         .filter((item) => item.score !== null)
         .sort((a, b) => a.score - b.score)
