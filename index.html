@@ -172,10 +172,6 @@
     }
 
     .hero-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 28px;
-      align-items: end;
       position: relative;
       z-index: 1;
     }
@@ -346,7 +342,9 @@
       display: flex;
       gap: 16px;
       align-items: flex-start;
-      margin-bottom: 16px;
+      margin-bottom: 0;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line-dim);
     }
 
     .question-index {
@@ -366,7 +364,7 @@
     }
 
     .question-title {
-      font-size: 1.06rem;
+      font-size: 1.08rem;
       line-height: 1.4;
       color: var(--ink-bright);
       font-weight: 600;
@@ -382,8 +380,19 @@
     /* ── Options ── */
     .options {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       margin-top: 16px;
+      padding-top: 2px;
+    }
+
+    .options-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.6;
+      margin-bottom: 2px;
     }
 
     .option {
@@ -398,10 +407,10 @@
 
     .option label {
       display: block;
-      padding: 16px 18px;
-      border-radius: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
       border: 1px solid var(--line-dim);
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(255, 255, 255, 0.015);
       cursor: pointer;
       transition: all 220ms ease;
       min-height: 44px;
@@ -429,9 +438,9 @@
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      font-weight: 600;
-      font-size: 0.94rem;
-      color: var(--ink-bright);
+      font-weight: 500;
+      font-size: 0.88rem;
+      color: var(--ink);
     }
 
     .score-tag {
@@ -447,10 +456,10 @@
     }
 
     .option-copy {
-      margin-top: 6px;
+      margin-top: 4px;
       color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.88rem;
+      line-height: 1.55;
+      font-size: 0.82rem;
     }
 
     /* ── Summary Panel ── */
@@ -822,20 +831,6 @@
         border-radius: 18px;
       }
 
-      .hero-grid {
-        grid-template-columns: 1fr;
-        gap: 18px;
-      }
-
-      .hero-badges {
-        justify-content: flex-start;
-        gap: 6px;
-      }
-
-      .badge {
-        font-size: 0.72rem;
-        padding: 6px 10px;
-      }
 
       h1 {
         font-size: clamp(1.5rem, 8vw, 2.2rem);
@@ -996,13 +991,6 @@
           <h1>AI Native 组织评估器</h1>
           <p>这不是一个"用了多少 AI 工具"的测试，而是一个关于组织底座的测试。请基于你所在公司当前的真实状态，为每个维度选择最接近的选项。系统会实时生成综合评分、组织建议和管理层思考题。</p>
         </div>
-        <div class="hero-badges">
-          <div class="badge">8 个维度</div>
-          <div class="badge">0-24 分</div>
-          <div class="badge">实时诊断</div>
-          <div class="badge">建议与思考</div>
-          <a class="badge badge-link" href="./ai-native-organization-essay.html">查看完整文章</a>
-        </div>
       </div>
     </section>
 
@@ -1040,7 +1028,7 @@
             <div class="dimension-list" id="dimensionList"></div>
           </section>
 
-          <section class="text-block">
+          <section class="text-block" id="adviceSection">
             <h3>组织建议</h3>
             <ul class="bullet-list" id="adviceList"></ul>
           </section>
@@ -1239,7 +1227,7 @@
                 <div class="question-copy">${dimension.copy}</div>
               </div>
             </div>
-            <div class="options">${options}</div>
+            <div class="options"><div class="options-label">选择评分</div>${options}</div>
           </article>
         `;
       }).join('');
@@ -1367,8 +1355,10 @@
 
     function scrollToFirstUnanswered() {
       const firstUnanswered = getSelections().find((item) => item.score === null);
-      const targetId = firstUnanswered ? `question-${firstUnanswered.id}` : 'summaryPanel';
-      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const target = firstUnanswered
+        ? document.getElementById(`question-${firstUnanswered.id}`)
+        : document.getElementById('adviceSection');
+      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function updateDock(total, completed, category) {
@@ -1377,7 +1367,7 @@
 
       if (completed === dimensions.length) {
         dockLabel.textContent = `已完成评估，当前：${category.label}`;
-        dockAction.textContent = '查看报告';
+        dockAction.textContent = '组织诊断';
       } else if (completed === 0) {
         dockLabel.textContent = '先开始作答，系统会实时生成结果。';
         dockAction.textContent = '开始作答';
